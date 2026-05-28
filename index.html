@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  <script>
+    (function() {
+      try {
+        const stored = localStorage.getItem("theme");
+        if (stored === "dark") {
+          document.documentElement.classList.add("dark");
+        }
+        else if (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (e) {
+      }
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Sai Charan Reddy | Portfolio</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="apple-mobile-web-app-title" content="Sai Charan Reddy" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Sai Charan Reddy | Portfolio" />
+  <meta property="og:image" content="/favicon.svg" />
+  <meta property="og:url" content="" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Sai Charan Reddy | Portfolio" />
+  <meta name="twitter:image" content="/favicon.svg" />
+</head>
+  <body id="body" class="overflow-y-scroll no-scrollbar" >
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+

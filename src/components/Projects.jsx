@@ -1,0 +1,113 @@
+import { useState, useRef, useEffect, forwardRef } from "react";
+import { motion } from "framer-motion";
+import { ProjectCard } from "./ProjectCard";
+
+
+const projects = [
+  {
+    id: "unauthorized-login",
+    title: "Unauthorized Login Detection System",
+    imageUrl: "",
+    iconUrl: "",
+    githubUrl: "https://github.com/ysaicharanreddy1/Unauthorized-Login-Detection-System"
+  },
+  {
+    id: "library-management",
+    title: "Library Management REST API",
+    imageUrl: "",
+    iconUrl: "",
+    githubUrl: "https://github.com/ysaicharanreddy1/Library-Management-REST-API"
+  },
+  {
+    id: "collaborative-notes",
+    title: "Collaborative Notes",
+    imageUrl: "",
+    iconUrl: "",
+    githubUrl: "https://github.com/ysaicharanreddy1/Collaborative-Notes"
+  }
+];
+
+function getFrameHorizontalPadding() {
+  return window.innerWidth >= 768 ? 56 * 2 : 28 * 2;
+}
+
+export const Projects = forwardRef((props, ref) => {
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [clickedIdx, setClickedIdx] = useState(null);
+  const frameRef = useRef(null);
+  const railRef = useRef(null);
+  const cardRef = useRef(null);
+  const [dragBounds, setDragBounds] = useState({ left: 0, right: 0 });
+
+  useEffect(() => {
+    function updateConstraints() {
+      if (!frameRef.current || !railRef.current) return;
+      const frameWidth = frameRef.current.offsetWidth - getFrameHorizontalPadding();
+      const railWidth = railRef.current.scrollWidth;
+      const gap = 28;
+      const maxDrag = railWidth > frameWidth ? railWidth - frameWidth + gap : 0;
+      setDragBounds({ left: -maxDrag, right: 0 });
+    }
+    updateConstraints();
+    window.addEventListener("resize", updateConstraints);
+    return () => window.removeEventListener("resize", updateConstraints);
+  }, []);
+
+  return (
+    <section
+      id="projects"
+      ref={ref}
+      aria-labelledby="projects-heading"
+      className="w-full flex flex-col items-center space-y-[20px] md:space-y-[48px]"
+    >
+      <div className="md:px-[88px] sm:px-[52px] px-[40px] w-full">
+        <h2
+          id="projects-heading"
+          className="text-left text-foreground text-[24px] md:text-[32px] font-bold transition-colors duration-200"
+        >
+          Projects
+        </h2>
+      </div>
+      <div
+        ref={frameRef}
+        className="w-full overflow-x-auto no-scrollbar md:px-[88px] sm:px-[52px] px-[40px]"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        <motion.div
+          ref={railRef}
+          role="group"
+          aria-label="Projects Carousel"
+          className="inline-flex space-x-7 py-2"
+          drag="x"
+          onDragStart={() => setIsDragging(true)}
+          onDragEnd={() => setIsDragging(false)}
+          dragConstraints={dragBounds}
+          dragElastic={0.5}
+          whileTap={{ cursor: "grabbing" }}
+          transition={{ type: "spring", bounce: 0.8, mass: 0.1, stiffness: 30, damping: 10 }}
+        >
+          {projects.map((proj, idx) => (
+            <div
+              key={proj.id}
+              role="group"
+              aria-label={proj.title}
+              className="flex-shrink-0 md:w-[260px] md:h-[350px] w-[210px] h-[260px]"
+              ref={idx === 0 ? cardRef : null}
+              onMouseEnter={() => setHoveredCard(idx)}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <ProjectCard
+                project={proj}
+                isHovered={hoveredCard === idx}
+                isDragging={isDragging}
+                idx={idx}
+                onCardClick={() => {}}
+              />
+            </div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+});
